@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-import { registerUser } from '../../redux/actions/authActions'
+import { logUser } from '../../redux/actions/authActions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,20 +24,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const mapState = state => ({
-  auth: state.auth
-})
-
-const Register = ({ registerUser, auth: { errors } }) => {
+const Loggin = ({ logUser, history }) => {
   // HOOKS
   const classes = useStyles()
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   })
-  const { name, email, password, confirmPassword } = formData
+  const { email, password } = formData
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -45,23 +39,15 @@ const Register = ({ registerUser, auth: { errors } }) => {
 
   const handleSubmit = e => {
     e.preventDefault()
-    registerUser(formData)
+    logUser(formData, history)
   }
 
   return (
     <Paper className={classes.root}>
       <form noValidate onSubmit={handleSubmit}>
         <Typography className={classes.formTitle} variant='h2' color='primary'>
-          Inscris toi !!
+          Connectes toi !!
         </Typography>
-        <Input
-          className={classes.textFields}
-          name='name'
-          value={name}
-          onChange={handleChange}
-          placeholder='Nom'
-          fullWidth
-        />
         <Input
           className={classes.textFields}
           name='email'
@@ -80,15 +66,6 @@ const Register = ({ registerUser, auth: { errors } }) => {
           placeholder='Mot de passe'
           fullWidth
         />
-        <Input
-          className={classes.textFields}
-          name='confirmPassword'
-          type='password'
-          value={confirmPassword}
-          onChange={handleChange}
-          placeholder='Confirmes ton mot de passe'
-          fullWidth
-        />
         <Button variant='contained' color='primary' type='submit'>
           Envoyer
         </Button>
@@ -97,9 +74,8 @@ const Register = ({ registerUser, auth: { errors } }) => {
   )
 }
 
-Register.propTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+Loggin.propTypes = {
+  logUser: PropTypes.func.isRequired
 }
 
-export default connect(mapState, { registerUser })(Register)
+export default connect(null, { logUser })(Loggin)
