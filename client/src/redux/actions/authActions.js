@@ -2,7 +2,7 @@ import axios from 'axios'
 import { REGISTER_USER, LOG_USER, AUTH_ERROR, LOAD_USER, LOGOUT_USER } from '../types'
 import setAuthToken from '../../utils/setAuthToken'
 
-export const registerUser = formData => async dispatch => {
+export const registerUser = (formData, history) => async dispatch => {
   const config = {
     headers: {
       'Content-type': 'application/json'
@@ -16,7 +16,7 @@ export const registerUser = formData => async dispatch => {
       payload: res.data
     })
     dispatch(loadUser())
-    return alert('Inscription réussie')
+    history.push('/')
   } catch (err) {
     const errors = err.response.data.errors
     if (errors) {
@@ -80,5 +80,5 @@ export const logOut = history => dispatch => {
   dispatch({
     type: LOGOUT_USER
   })
-  history.push('/loggin')
+  history.push('/login')
 }

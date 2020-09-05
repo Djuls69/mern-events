@@ -8,8 +8,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import theme from './theme/theme'
 import Navbar from './components/navbar/Navbar'
 import Landing from './pages/landing/Landing'
-import Register from './pages/register/Register'
-import Loggin from './pages/loggin/Loggin'
+import Routes from './components/routes/Routes'
 
 const App = ({ loadUser }) => {
   useEffect(() => {
@@ -20,13 +19,10 @@ const App = ({ loadUser }) => {
     <Router>
       <ThemeProvider theme={theme}>
         <Navbar />
-        <Route exact path='/' component={Landing} />
-        <div className='container'>
-          <Switch>
-            <Route exact path='/register' component={Register} />
-            <Route exact path='/loggin' component={Loggin} />
-          </Switch>
-        </div>
+        <Switch>
+          <Route exact path='/' component={Landing} />
+          <Route component={Routes} />
+        </Switch>
       </ThemeProvider>
     </Router>
   )

@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { logUser } from '../../redux/actions/authActions'
+import { Redirect } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Loggin = ({ logUser, history }) => {
+const Loggin = ({ logUser, auth: { isAuth, loading }, history }) => {
   // HOOKS
   const classes = useStyles()
   const [formData, setFormData] = useState({
@@ -32,6 +33,10 @@ const Loggin = ({ logUser, history }) => {
     password: ''
   })
   const { email, password } = formData
+
+  if (isAuth && !loading) {
+    return <Redirect to='/' />
+  }
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -74,8 +79,13 @@ const Loggin = ({ logUser, history }) => {
   )
 }
 
+const mapState = state => ({
+  auth: state.auth
+})
+
 Loggin.propTypes = {
-  logUser: PropTypes.func.isRequired
+  logUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
-export default connect(null, { logUser })(Loggin)
+export default connect(mapState, { logUser })(Loggin)

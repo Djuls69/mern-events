@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
-import Input from '@material-ui/core/Input'
+import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { registerUser } from '../../redux/actions/authActions'
+import { Redirect } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,8 +16,13 @@ const useStyles = makeStyles(theme => ({
     padding: '5rem'
   },
   textFields: {
-    fontSize: '1.6rem',
-    marginBottom: '3rem'
+    marginBottom: '3rem',
+    '& input': {
+      fontSize: '1.6rem'
+    },
+    '& p': {
+      fontSize: '1.2rem'
+    }
   },
   formTitle: {
     textAlign: 'center',
@@ -28,7 +34,7 @@ const mapState = state => ({
   auth: state.auth
 })
 
-const Register = ({ registerUser, auth: { errors } }) => {
+const Register = ({ registerUser, auth: { isAuth, loading }, history }) => {
   // HOOKS
   const classes = useStyles()
   const [formData, setFormData] = useState({
@@ -39,13 +45,17 @@ const Register = ({ registerUser, auth: { errors } }) => {
   })
   const { name, email, password, confirmPassword } = formData
 
+  if (isAuth && !loading) {
+    return <Redirect to='/' />
+  }
+
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = e => {
     e.preventDefault()
-    registerUser(formData)
+    registerUser(formData, history)
   }
 
   return (
@@ -54,7 +64,7 @@ const Register = ({ registerUser, auth: { errors } }) => {
         <Typography className={classes.formTitle} variant='h2' color='primary'>
           Inscris toi !!
         </Typography>
-        <Input
+        <TextField
           className={classes.textFields}
           name='name'
           value={name}
@@ -62,16 +72,17 @@ const Register = ({ registerUser, auth: { errors } }) => {
           placeholder='Nom'
           fullWidth
         />
-        <Input
+        <TextField
           className={classes.textFields}
           name='email'
           type='email'
           value={email}
           onChange={handleChange}
           placeholder='Email'
+          helperText="Merci d'utiliser un email associé à Gravatar si vous souhaitez une image personnalisée"
           fullWidth
         />
-        <Input
+        <TextField
           className={classes.textFields}
           name='password'
           type='password'
@@ -80,7 +91,7 @@ const Register = ({ registerUser, auth: { errors } }) => {
           placeholder='Mot de passe'
           fullWidth
         />
-        <Input
+        <TextField
           className={classes.textFields}
           name='confirmPassword'
           type='password'
