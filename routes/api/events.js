@@ -21,6 +21,19 @@ router.get('/', async (req, res) => {
   }
 })
 
+// Get event by id
+// Public
+// GET /api/events/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id)
+    return res.json(event)
+  } catch (err) {
+    console.error(err.message)
+    return res.status(500).json({ errors: 'Erreur serveur' })
+  }
+})
+
 // Create an event
 // Private
 // POST /api/events
@@ -53,7 +66,7 @@ router.post(
       newEvent = {
         user: req.user.id,
         userName: user.name,
-        avatar: user.avatar,
+        userAvatar: user.avatar,
         eventName,
         type,
         date,
