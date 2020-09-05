@@ -7,7 +7,11 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const config = require('config')
 const tokenKey = config.get('jwtSecretKey')
+const auth = require('../../middlewares/auth')
 
+// register user
+// Public
+// POST /api/users
 router.post(
   '/',
   [
@@ -63,5 +67,21 @@ router.post(
     }
   }
 )
+
+// Get user
+// Private
+// GET /api/users
+router.get('/', [auth], async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    if (!user) {
+      return res.status(404).json({ msg: 'Utilisateur introuvable' })
+    }
+    return res.json(user)
+  } catch (err) {
+    console.error(err.message)
+    return res.status(500).json({ errors: 'Erreur serveur' })
+  }
+})
 
 module.exports = router
