@@ -22,3 +22,8 @@ a {
 ul {
   list-style: none;
 }
+
+.container {
+  max-width: 1300px;
+  margin: 12rem auto 0;
+}
