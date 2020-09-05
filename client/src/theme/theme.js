@@ -6,6 +6,9 @@ const theme = createMuiTheme({
     primary: {
       main: '#00adb5',
       contrastText: '#eee'
+    },
+    secondary: {
+      main: '#f38181'
     }
   },
   typography: {
@@ -13,6 +16,10 @@ const theme = createMuiTheme({
       fontWeight: 300,
       fontSize: '1.6rem',
       textTransform: 'inherit'
+    },
+    body1: {
+      fontSize: '1.6rem',
+      fontWeight: 300
     }
   }
 })
