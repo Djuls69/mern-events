@@ -48,7 +48,7 @@ const EventsList = ({ events: { loading, events }, getEvents }) => {
                 {event.eventName}
               </Typography>
               <Typography variant='body1'>
-                Créé le <Moment format='DD/MM/YYYY'>{Date.now()}</Moment> par Admin
+                Créé le <Moment format='DD/MM/YYYY'>{event.date}</Moment> par {event.userName}
               </Typography>
             </div>
           </Card>

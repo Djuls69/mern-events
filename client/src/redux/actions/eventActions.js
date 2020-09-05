@@ -1,9 +1,8 @@
 import axios from 'axios'
-import { GET_EVENTS, GET_EVENT, GET_EVENTS_FAIL, CLEAR_EVENTS } from '../types'
+import { GET_EVENTS, GET_EVENT, GET_EVENTS_FAIL } from '../types'
 
 // Get all events
 export const getEvents = () => async dispatch => {
-  dispatch({ type: CLEAR_EVENTS })
   try {
     const res = await axios.get('/api/events')
     dispatch({

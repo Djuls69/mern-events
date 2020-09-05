@@ -29,13 +29,28 @@ const Event = ({ auth, events: { loading, event }, match, getEvent }) => {
     zoom: 13
   }
 
+  const displayImage = () => {
+    if (!loading) {
+      switch (event.type) {
+        case 'visite':
+          return require(`../../assets/img/visite.jpg`)
+        case 'concert':
+          return require(`../../assets/img/concert.jpg`)
+        case 'restaurant':
+          return require(`../../assets/img/restaurant.jpg`)
+        default:
+          return 'https://images.unsplash.com/photo-1599261452733-be5022805941?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1573&q=80'
+      }
+    }
+  }
+
   return loading && event === null ? (
     <CircularProgress />
   ) : (
     <Grid container spacing={3}>
       <Grid item md={8}>
         <Paper className={classes.container}>
-          <img src={require(`../../assets/img/${event.type}.jpg`)} className={classes.media} alt='' />
+          <img src={displayImage()} className={classes.media} alt='' />
           <div className={classes.eventContent}>
             <Typography variant='h2' color='secondary'>
               {event.eventName}
