@@ -14,7 +14,7 @@ import { getEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-const Event = ({ auth, events: { loading, event }, match, getEvent }) => {
+const Event = ({ auth, events: { event }, match, getEvent }) => {
   const classes = eventStyles()
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Event = ({ auth, events: { loading, event }, match, getEvent }) => {
   }
 
   const displayImage = () => {
-    if (!loading) {
+    if (event !== null) {
       switch (event.type) {
         case 'visite':
           return require(`../../assets/img/visite.jpg`)
@@ -44,7 +44,34 @@ const Event = ({ auth, events: { loading, event }, match, getEvent }) => {
     }
   }
 
-  return loading && event === null ? (
+  const displayButtons = () => {
+    if (!auth.loading && auth.user._id === event.user) {
+      return (
+        <div className={classes.eventActions}>
+          <Button disableRipple variant='contained' color='primary'>
+            <i className='fas fa-pen'></i> Editer
+          </Button>
+          <Button disableRipple variant='contained' color='secondary'>
+            <i className='fas fa-eraser'></i> Supprimer
+          </Button>
+        </div>
+      )
+    } else if (!auth.loading && auth.user !== null) {
+      return (
+        <div className={classes.eventActions}>
+          <Button disableRipple variant='contained' color='primary'>
+            <i className='fas fa-pen'></i> Participer
+          </Button>
+          <Button disableRipple variant='contained' color='secondary'>
+            <i className='fas fa-eraser'></i> Se désister
+          </Button>
+        </div>
+      )
+    }
+    return
+  }
+
+  return event === null ? (
     <CircularProgress />
   ) : (
     <Grid container spacing={3}>
@@ -68,25 +95,7 @@ const Event = ({ auth, events: { loading, event }, match, getEvent }) => {
               <Avatar alt='' src={event.userAvatar} />
               <Typography variant='h5'>{event.userName}</Typography>
             </Button>
-            {!auth.loading && auth.user._id === event.user ? (
-              <div className={classes.eventActions}>
-                <Button disableRipple variant='contained' color='primary'>
-                  <i className='fas fa-pen'></i> Editer
-                </Button>
-                <Button disableRipple variant='contained' color='secondary'>
-                  <i className='fas fa-eraser'></i> Supprimer
-                </Button>
-              </div>
-            ) : (
-              <div className={classes.eventActions}>
-                <Button disableRipple variant='contained' color='primary'>
-                  <i className='fas fa-pen'></i> Participer
-                </Button>
-                <Button disableRipple variant='contained' color='secondary'>
-                  <i className='fas fa-eraser'></i> Se désister
-                </Button>
-              </div>
-            )}
+            {displayButtons()}
             <div style={{ width: '100%', height: '200px' }}>
               <GoogleMapReact
                 bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLEMAP_KEY }}
@@ -95,6 +104,12 @@ const Event = ({ auth, events: { loading, event }, match, getEvent }) => {
               >
                 <Marker lat={eventLocation.center.lat} lng={eventLocation.center.lng} />
               </GoogleMapReact>
+            </div>
+            <div className={classes.description}>
+              <Typography variant='h3' color='secondary'>
+                Description:
+              </Typography>
+              <Typography variant='body1'>{event.description}</Typography>
             </div>
             {event.comments.length > 0 && (
               <div className={classes.comments}>

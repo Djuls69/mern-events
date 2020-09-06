@@ -26,16 +26,14 @@ const useStyles = makeStyles({
   }
 })
 
-const EventsList = ({ events: { loading, events }, getEvents }) => {
+const EventsList = ({ events: { events }, getEvents }) => {
   const classes = useStyles()
 
   useEffect(() => {
     getEvents()
   }, [getEvents])
 
-  return loading && events === null ? (
-    <CircularProgress />
-  ) : (
+  return events !== null ? (
     <Fragment>
       {events &&
         events.map(event => (
@@ -54,6 +52,8 @@ const EventsList = ({ events: { loading, events }, getEvents }) => {
           </Card>
         ))}
     </Fragment>
+  ) : (
+    <CircularProgress />
   )
 }
 

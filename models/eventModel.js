@@ -23,6 +23,10 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  description: {
+    type: String,
+    required: true
+  },
   address: {
     type: String,
     required: true

@@ -29,11 +29,11 @@ router.post(
     try {
       const existingUser = await User.findOne({ email: email })
       if (existingUser) {
-        return res.status(403).json({ errors: 'Adresse email déjà utilisée' })
+        return res.status(403).json({ errors: [{ msg: 'Adresse e-mail déjà utilisée' }] })
       }
 
       if (confirmPassword === null || confirmPassword !== password) {
-        return res.status(403).json({ errors: 'Les mots de passe ne correspondent pas' })
+        return res.status(403).json({ errors: [{ msg: 'Les mots de passe ne correspondent pas' }] })
       }
 
       const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'retro' })

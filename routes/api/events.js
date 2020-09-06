@@ -45,7 +45,8 @@ router.post(
       body('eventName', "Merci de préciser le nom de l'évenement").not().isEmpty(),
       body('type', "Merci de préciser le type d'évenement").not().isEmpty(),
       body('date', "Merci d'indiquer une date").not().isEmpty(),
-      body('address', "Merci d'indiquer l'adresse").not().isEmpty()
+      body('address', "Merci d'indiquer l'adresse").not().isEmpty(),
+      body('description', 'Merci de donner une description avec au minimim 20 caractères').isLength({ min: 20 })
     ]
   ],
   async (req, res) => {
