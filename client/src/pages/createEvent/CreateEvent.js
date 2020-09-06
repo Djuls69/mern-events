@@ -9,9 +9,12 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+import frLocale from 'date-fns/locale/fr'
 import { connect } from 'react-redux'
 import { createEvent } from '../../redux/actions/eventActions'
-import { Redirect } from 'react-router-dom'
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,6 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
   textFields: {
     marginBottom: '3rem',
+    width: '100%',
     '& input': {
       fontSize: '1.6rem'
     },
@@ -31,6 +35,11 @@ const useStyles = makeStyles(theme => ({
   formTitle: {
     textAlign: 'center',
     marginBottom: '3rem'
+  },
+  datePicker: {
+    width: '100%',
+    marginBottom: '3rem',
+    fontSize: '1.6rem'
   }
 }))
 
@@ -41,12 +50,35 @@ const CreateEvent = ({ createEvent }) => {
     eventName: '',
     type: '',
     address: '',
-    date: ''
+    lat: null,
+    lng: null,
+    date: new Date()
   })
   const { eventName, type, address, date, description } = formData
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleDayChange = date => {
+    setFormData({ ...formData, date })
+  }
+
+  const handleAddressChange = address => {
+    setFormData({ ...formData, address })
+  }
+
+  const handleSelect = async address => {
+    const res = await geocodeByAddress(address)
+    const latLng = await getLatLng(res[0])
+    console.log(res[0])
+    console.log(latLng)
+    setFormData({
+      ...formData,
+      address,
+      lat: latLng.lat,
+      lng: latLng.lng
+    })
   }
 
   const handleSubmit = e => {
@@ -67,32 +99,59 @@ const CreateEvent = ({ createEvent }) => {
           placeholder='Donnes un titre'
           fullWidth
         />
+
         <FormControl className={classes.textFields} fullWidth>
           <InputLabel id='type-event'>Type</InputLabel>
-          <Select labelId='type-event' value={type} onChange={handleChange}>
+          <Select labelId='type-event' name='type' value={type} onChange={handleChange}>
             <MenuItem value={'visite'}>Visite</MenuItem>
             <MenuItem value={'concert'}>Concert</MenuItem>
             <MenuItem value={'restaurant'}>Restaurant</MenuItem>
           </Select>
         </FormControl>
-        <TextField
-          className={classes.textFields}
-          name='address'
-          type='text'
-          value={address}
-          onChange={handleChange}
-          placeholder='Lieu'
-          fullWidth
-        />
-        <TextField
-          className={classes.textFields}
-          name='date'
-          type='date'
-          value={date}
-          onChange={handleChange}
-          placeholder='Date de départ'
-          fullWidth
-        />
+
+        <PlacesAutocomplete value={address} onChange={handleAddressChange} onSelect={handleSelect}>
+          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+            <div>
+              <TextField
+                {...getInputProps({
+                  placeholder: 'Lieu',
+                  className: classes.textFields
+                })}
+              />
+              <div className='autocomplete-dropdown-container'>
+                {loading && <div>Loading...</div>}
+                {suggestions.map(suggestion => {
+                  const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item'
+                  // inline style for demonstration purpose
+                  const style = suggestion.active
+                    ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                    : { backgroundColor: '#ffffff', cursor: 'pointer' }
+                  return (
+                    <div
+                      {...getSuggestionItemProps(suggestion, {
+                        className,
+                        style
+                      })}
+                    >
+                      <span>{suggestion.description}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </PlacesAutocomplete>
+
+        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={frLocale}>
+          <DatePicker
+            className={classes.datePicker}
+            name='date'
+            format='dd/MM/yyyy'
+            value={date}
+            onChange={handleDayChange}
+          />
+        </MuiPickersUtilsProvider>
+
         <TextField
           className={classes.textFields}
           name='description'

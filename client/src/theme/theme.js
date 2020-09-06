@@ -12,6 +12,7 @@ const theme = createMuiTheme({
     }
   },
   typography: {
+    htmlFontSize: 16,
     button: {
       fontWeight: 300,
       fontSize: '1.6rem',
@@ -19,6 +20,14 @@ const theme = createMuiTheme({
     },
     body1: {
       fontSize: '1.6rem',
+      fontWeight: 300
+    },
+    body2: {
+      fontSize: '1.2rem',
+      fontWeight: 300
+    },
+    caption: {
+      fontSize: '1rem',
       fontWeight: 300
     },
     h1: {
