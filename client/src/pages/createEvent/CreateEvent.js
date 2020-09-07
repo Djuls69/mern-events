@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const CreateEvent = ({ createEvent }) => {
+const CreateEvent = ({ createEvent, history }) => {
   // HOOKS
   const classes = useStyles()
   const [formData, setFormData] = useState({
@@ -83,6 +83,7 @@ const CreateEvent = ({ createEvent }) => {
 
   const handleSubmit = e => {
     e.preventDefault()
+    createEvent(formData, history)
   }
 
   return (

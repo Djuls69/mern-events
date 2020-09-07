@@ -6,6 +6,7 @@ import Event from '../../pages/event/Event'
 import EventsList from '../../pages/eventsList/EventsList'
 import Alert from '../alert/Alert'
 import CreateEvent from '../../pages/createEvent/CreateEvent'
+import PrivateRoute from './PrivateRoute'
 
 const Routes = () => {
   return (
@@ -16,7 +17,7 @@ const Routes = () => {
         <Route exact path='/login' component={Loggin} />
         <Route exact path='/dashboard' component={EventsList} />
         <Route exact path='/event/:eventId' component={Event} />
-        <Route exact path='/create-event' component={CreateEvent} />
+        <PrivateRoute exact path='/create-event' component={CreateEvent} />
       </Switch>
     </div>
   )

@@ -10,14 +10,14 @@ const User = require('../../models/userModel')
 // GET /api/events
 router.get('/', async (req, res) => {
   try {
-    const events = await Event.find().sort({ date: -1 })
+    const events = await Event.find().sort({ date: 1 })
     if (events.length === 0) {
-      return res.status(404).json({ errors: "Pas d'évenements créés" })
+      return res.status(404).send("Pas d'évenements créés")
     }
     return res.json(events)
   } catch (err) {
     console.error(err.message)
-    return res.status(500).json({ errors: 'Erreur serveur' })
+    return res.status(500).send('Erreur serveur')
   }
 })
 
@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
     return res.json(event)
   } catch (err) {
     console.error(err.message)
-    return res.status(500).json({ errors: 'Erreur serveur' })
+    return res.status(500).send('Erreur serveur')
   }
 })
 
@@ -50,21 +50,21 @@ router.post(
     ]
   ],
   async (req, res) => {
-    const { eventName, type, date, address, lat, lng } = req.body
+    const { eventName, type, date, address, lat, lng, description } = req.body
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
 
     try {
-      let newEvent = await Event.findOne({ eventName })
-      if (newEvent) {
-        return res.status(403).json({ errors: 'Evenement déjà créé' })
+      const existingEvent = await Event.findOne({ eventName })
+      if (existingEvent) {
+        return res.status(403).json({ errors: [{ msg: 'Evenement déjà créé' }] })
       }
 
       const user = await User.findById(req.user.id).select('-password')
 
-      newEvent = {
+      const newEvent = await Event({
         user: req.user.id,
         userName: user.name,
         userAvatar: user.avatar,
@@ -73,14 +73,14 @@ router.post(
         date,
         address,
         lat,
-        lng
-      }
+        lng,
+        description
+      }).save()
 
-      await Event(newEvent).save()
       return res.json(newEvent)
     } catch (err) {
       console.error(err.message)
-      return res.status(500).json({ errors: 'Erreur serveur' })
+      return res.status(500).send('Erreur serveur')
     }
   }
 )
@@ -92,18 +92,18 @@ router.delete('/:eventId', [auth], async (req, res) => {
   try {
     const event = await Event.findById(req.params.eventId)
     if (!event) {
-      return res.status(404).json({ errors: 'Evenement introuvable' })
+      return res.status(404).send('Evenement introuvable')
     }
     if (event.user.toString() !== req.user.id) {
-      return res.status(403).json({ errors: 'Non autorisé' })
+      return res.status(403).send('Non autorisé')
     }
     await Event.deleteOne(event)
     return res.json({ msg: 'Evenement supprimé' })
   } catch (err) {
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ error: 'Evenement introuvable' })
+      return res.status(500).send('Erreur serveur')
     }
-    return res.status(500).json({ errors: 'Erreur serveur' })
+    return res.status(500).send('Erreur serveur')
   }
 })
 

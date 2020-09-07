@@ -29,8 +29,17 @@ export const eventStyles = makeStyles(theme => ({
       marginRight: '2rem'
     }
   },
+  description: {
+    marginTop: '3rem',
+    '& h3': {
+      marginBottom: '2rem'
+    }
+  },
   comments: {
-    marginTop: '3rem'
+    marginTop: '3rem',
+    '& h3': {
+      marginBottom: '2rem'
+    }
   },
   comment: {
     margin: '2rem 0',

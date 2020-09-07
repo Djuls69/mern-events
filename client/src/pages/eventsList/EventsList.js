@@ -12,7 +12,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 const useStyles = makeStyles({
   card: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: '3rem'
   },
   mediaContainer: {
     width: '33%',
@@ -26,31 +27,30 @@ const useStyles = makeStyles({
   }
 })
 
-const EventsList = ({ events: { events }, getEvents }) => {
+const EventsList = ({ events: { events, loading }, getEvents }) => {
   const classes = useStyles()
 
   useEffect(() => {
     getEvents()
   }, [getEvents])
 
-  return events !== null ? (
+  return events !== null && !loading ? (
     <Fragment>
-      {events &&
-        events.map(event => (
-          <Card component={Link} to={`/event/${event._id}`} key={event._id} className={classes.card}>
-            <div className={classes.mediaContainer}>
-              <img src={require(`../../assets/img/${event.type}.jpg`)} className={classes.cardMedia} alt='' />
-            </div>
-            <div className={classes.mediaDetails}>
-              <Typography variant='h2' color='secondary'>
-                {event.eventName}
-              </Typography>
-              <Typography variant='body1'>
-                Créé le <Moment format='DD/MM/YYYY'>{event.date}</Moment> par {event.userName}
-              </Typography>
-            </div>
-          </Card>
-        ))}
+      {events.map(event => (
+        <Card component={Link} to={`/event/${event._id}`} key={event._id} className={classes.card}>
+          <div className={classes.mediaContainer}>
+            <img src={require(`../../assets/img/${event.type}.jpg`)} className={classes.cardMedia} alt='' />
+          </div>
+          <div className={classes.mediaDetails}>
+            <Typography variant='h2' color='secondary'>
+              {event.eventName}
+            </Typography>
+            <Typography variant='body1'>
+              Créé le <Moment format='DD/MM/YYYY'>{event.date}</Moment> par {event.userName}
+            </Typography>
+          </div>
+        </Card>
+      ))}
     </Fragment>
   ) : (
     <CircularProgress />

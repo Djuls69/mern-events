@@ -2,7 +2,8 @@ import { GET_EVENTS_FAIL, GET_EVENTS, GET_EVENT } from '../types'
 
 const INIT_STATE = {
   events: null,
-  event: null
+  event: null,
+  loading: true
 }
 
 const eventReducer = (state = INIT_STATE, action) => {
@@ -12,17 +13,22 @@ const eventReducer = (state = INIT_STATE, action) => {
     case GET_EVENTS:
       return {
         ...state,
-        events: payload
+        events: payload,
+        event: null,
+        loading: false
       }
     case GET_EVENT:
       return {
         ...state,
-        event: payload
+        event: payload,
+        events: null,
+        loading: false
       }
     case GET_EVENTS_FAIL:
       return {
         ...state,
-        events: null
+        events: null,
+        loading: false
       }
     default:
       return state

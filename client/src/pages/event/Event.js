@@ -14,7 +14,7 @@ import { getEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-const Event = ({ auth, events: { event }, match, getEvent }) => {
+const Event = ({ auth, events: { event, loading }, match, getEvent }) => {
   const classes = eventStyles()
 
   useEffect(() => {
@@ -38,8 +38,12 @@ const Event = ({ auth, events: { event }, match, getEvent }) => {
           return require(`../../assets/img/concert.jpg`)
         case 'restaurant':
           return require(`../../assets/img/restaurant.jpg`)
+        case 'festival':
+          return require(`../../assets/img/festival.jpg`)
+        case 'cinema':
+          return require('../../assets/img/cinema.jpg')
         default:
-          return 'https://images.unsplash.com/photo-1599261452733-be5022805941?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1573&q=80'
+          return require(`../../assets/img/default.jpg`)
       }
     }
   }
@@ -71,9 +75,7 @@ const Event = ({ auth, events: { event }, match, getEvent }) => {
     return
   }
 
-  return event === null ? (
-    <CircularProgress />
-  ) : (
+  return event !== null && !loading ? (
     <Grid container spacing={3}>
       <Grid item md={8}>
         <Paper className={classes.container}>
@@ -148,6 +150,8 @@ const Event = ({ auth, events: { event }, match, getEvent }) => {
         </Paper>
       </Grid>
     </Grid>
+  ) : (
+    <CircularProgress />
   )
 }
 
