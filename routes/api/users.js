@@ -62,8 +62,7 @@ router.post(
         return res.json({ token })
       })
     } catch (err) {
-      console.error(err.message)
-      return res.status(500).json({ errors: 'Erreur serveur' })
+      return res.status(500).send('Erreur serveur')
     }
   }
 )
@@ -79,8 +78,7 @@ router.get('/', [auth], async (req, res) => {
     }
     return res.json(user)
   } catch (err) {
-    console.error(err.message)
-    return res.status(500).json({ errors: 'Erreur serveur' })
+    return res.status(500).send('Erreur serveur')
   }
 })
 

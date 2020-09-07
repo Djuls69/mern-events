@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
@@ -11,13 +11,14 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import frLocale from 'date-fns/locale/fr'
+import { getEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
-import { createEvent } from '../../redux/actions/eventActions'
+import { updateEvent } from '../../redux/actions/eventActions'
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
-import { createEventStyles } from './CreateEventStyles'
+import { createEventStyles } from '../createEvent/CreateEventStyles'
 import AutocompleteAddress from '../../components/autocompleteAddress/AutocompleteAddress'
 
-const CreateEvent = ({ createEvent, history }) => {
+const EditEvent = ({ updateEvent, getEvent, history, events: { loading, event }, match }) => {
   // HOOKS
   const classes = createEventStyles()
   const [formData, setFormData] = useState({
@@ -26,9 +27,24 @@ const CreateEvent = ({ createEvent, history }) => {
     address: '',
     lat: null,
     lng: null,
-    date: new Date()
+    date: new Date(),
+    description: ''
   })
   const { eventName, type, address, date, description } = formData
+
+  useEffect(() => {
+    getEvent(match.params.id)
+    setFormData({
+      eventName: loading ? '' : event.eventName,
+      type: loading ? '' : event.type,
+      address: loading ? '' : event.address,
+      lat: loading ? '' : event.lat,
+      lng: loading ? '' : event.lng,
+      date: loading ? new Date() : event.date,
+      description: loading ? '' : event.description
+    })
+    // eslint-disable-next-line
+  }, [getEvent, loading])
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -57,14 +73,14 @@ const CreateEvent = ({ createEvent, history }) => {
 
   const handleSubmit = e => {
     e.preventDefault()
-    createEvent(formData, history)
+    updateEvent(event._id, formData, history)
   }
 
   return (
     <Paper className={classes.root}>
       <form noValidate onSubmit={handleSubmit}>
         <Typography className={classes.formTitle} variant='h2' color='primary'>
-          Créé ton event !!
+          Edites ton event
         </Typography>
         <TextField
           className={classes.textFields}
@@ -116,8 +132,14 @@ const CreateEvent = ({ createEvent, history }) => {
   )
 }
 
-CreateEvent.propTypes = {
-  createEvent: PropTypes.func.isRequired
+const mapState = state => ({
+  events: state.events
+})
+
+EditEvent.propTypes = {
+  updateEvent: PropTypes.func.isRequired,
+  getEvent: PropTypes.func.isRequired,
+  events: PropTypes.object.isRequired
 }
 
-export default connect(null, { createEvent })(CreateEvent)
+export default connect(mapState, { updateEvent, getEvent })(EditEvent)

@@ -1,4 +1,4 @@
-import { GET_EVENTS_FAIL, GET_EVENTS, GET_EVENT } from '../types'
+import { GET_EVENTS_FAIL, GET_EVENTS, GET_EVENT, UPDATE_EVENT } from '../types'
 
 const INIT_STATE = {
   events: null,
@@ -17,6 +17,7 @@ const eventReducer = (state = INIT_STATE, action) => {
         event: null,
         loading: false
       }
+    case UPDATE_EVENT:
     case GET_EVENT:
       return {
         ...state,

@@ -10,11 +10,12 @@ import Button from '@material-ui/core/Button'
 import GoogleMapReact from 'google-map-react'
 import Marker from '../../components/marker/Marker'
 import AttendeeItem from '../../components/attendeeItem/AttendeeItem'
-import { getEvent } from '../../redux/actions/eventActions'
+import { getEvent, deleteEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-const Event = ({ auth, events: { event, loading }, match, getEvent }) => {
+const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent, history }) => {
   const classes = eventStyles()
 
   useEffect(() => {
@@ -52,10 +53,10 @@ const Event = ({ auth, events: { event, loading }, match, getEvent }) => {
     if (!auth.loading && auth.user._id === event.user) {
       return (
         <div className={classes.eventActions}>
-          <Button disableRipple variant='contained' color='primary'>
+          <Button component={Link} to={`/edit-event/${event._id}`} disableRipple variant='contained' color='primary'>
             <i className='fas fa-pen'></i> Editer
           </Button>
-          <Button disableRipple variant='contained' color='secondary'>
+          <Button disableRipple onClick={() => deleteEvent(event._id, history)} variant='contained' color='secondary'>
             <i className='fas fa-eraser'></i> Supprimer
           </Button>
         </div>
@@ -98,6 +99,8 @@ const Event = ({ auth, events: { event, loading }, match, getEvent }) => {
               <Typography variant='h5'>{event.userName}</Typography>
             </Button>
             {displayButtons()}
+
+            {/* Google Map */}
             <div style={{ width: '100%', height: '200px' }}>
               <GoogleMapReact
                 bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLEMAP_KEY }}
@@ -107,37 +110,42 @@ const Event = ({ auth, events: { event, loading }, match, getEvent }) => {
                 <Marker lat={eventLocation.center.lat} lng={eventLocation.center.lng} />
               </GoogleMapReact>
             </div>
+            {/* End Google Map */}
+
             <div className={classes.description}>
               <Typography variant='h3' color='secondary'>
                 Description:
               </Typography>
               <Typography variant='body1'>{event.description}</Typography>
             </div>
-            {event.comments.length > 0 && (
-              <div className={classes.comments}>
-                <Typography variant='h3' color='secondary'>
-                  Commentaires:
-                </Typography>
-                <Paper className={classes.comment}>
-                  <div className={classes.commentUser}>
-                    <Avatar
-                      className={classes.commentUserAvatar}
-                      alt=''
-                      src='http://www.gravatar.com/avatar/437b9d5cf0923f597160c12329398fde?s=200&r=pg&d=retro'
-                    />
-                    <Typography variant='h5'>Admin</Typography>
-                  </div>
-                  <div className='commentText'>
-                    <Typography variant='body1'>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quaerat.
-                    </Typography>
-                  </div>
-                </Paper>
-              </div>
-            )}
+
+            {/* Comments */}
+            <div className={classes.comments}>
+              <Typography variant='h3' color='secondary'>
+                Commentaires:
+              </Typography>
+              <Paper className={classes.comment}>
+                <div className={classes.commentUser}>
+                  <Avatar
+                    className={classes.commentUserAvatar}
+                    alt=''
+                    src='http://www.gravatar.com/avatar/437b9d5cf0923f597160c12329398fde?s=200&r=pg&d=retro'
+                  />
+                  <Typography variant='h5'>Admin</Typography>
+                </div>
+                <div className='commentText'>
+                  <Typography variant='body1'>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quaerat.
+                  </Typography>
+                </div>
+              </Paper>
+            </div>
+            {/* End Comments */}
           </div>
         </Paper>
       </Grid>
+
+      {/* Attendees */}
       <Grid item md={4}>
         <Paper className={classes.container}>
           <Typography variant='h4' color='secondary'>
@@ -149,6 +157,7 @@ const Event = ({ auth, events: { event, loading }, match, getEvent }) => {
           />
         </Paper>
       </Grid>
+      {/* End Attendees */}
     </Grid>
   ) : (
     <CircularProgress />
@@ -163,7 +172,8 @@ const mapState = state => ({
 Event.propTypes = {
   events: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
-  getEvent: PropTypes.func.isRequired
+  getEvent: PropTypes.func.isRequired,
+  deleteEvent: PropTypes.func.isRequired
 }
 
-export default connect(mapState, { getEvent })(Event)
+export default connect(mapState, { getEvent, deleteEvent })(Event)

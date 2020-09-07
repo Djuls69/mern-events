@@ -27,6 +27,9 @@ export const eventStyles = makeStyles(theme => ({
     margin: '2rem 0',
     '& button': {
       marginRight: '2rem'
+    },
+    '& a': {
+      marginRight: '2rem'
     }
   },
   description: {
