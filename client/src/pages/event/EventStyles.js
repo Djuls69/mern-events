@@ -37,27 +37,5 @@ export const eventStyles = makeStyles(theme => ({
     '& h3': {
       marginBottom: '2rem'
     }
-  },
-  comments: {
-    marginTop: '3rem',
-    '& h3': {
-      marginBottom: '2rem'
-    }
-  },
-  comment: {
-    margin: '2rem 0',
-    padding: '2rem',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  commentUser: {
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: '3rem'
-  },
-  commentUserAvatar: {
-    width: '6rem',
-    height: '6rem',
-    marginRight: '2rem'
   }
 }))

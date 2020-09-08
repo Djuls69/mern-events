@@ -14,6 +14,7 @@ import { getEvent, deleteEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import EventComments from '../../components/eventComments/EventComments'
 
 const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent, history }) => {
   const classes = eventStyles()
@@ -31,7 +32,7 @@ const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent,
   }
 
   const displayImage = () => {
-    if (event !== null) {
+    if (!loading && event !== null) {
       switch (event.type) {
         case 'visite':
           return require(`../../assets/img/visite.jpg`)
@@ -50,7 +51,7 @@ const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent,
   }
 
   const displayButtons = () => {
-    if (!auth.loading && auth.user._id === event.user) {
+    if (!auth.loading && auth.user !== null && auth.user._id === event.user) {
       return (
         <div className={classes.eventActions}>
           <Button component={Link} to={`/edit-event/${event._id}`} disableRipple variant='contained' color='primary'>
@@ -119,28 +120,7 @@ const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent,
               <Typography variant='body1'>{event.description}</Typography>
             </div>
 
-            {/* Comments */}
-            <div className={classes.comments}>
-              <Typography variant='h3' color='secondary'>
-                Commentaires:
-              </Typography>
-              <Paper className={classes.comment}>
-                <div className={classes.commentUser}>
-                  <Avatar
-                    className={classes.commentUserAvatar}
-                    alt=''
-                    src='http://www.gravatar.com/avatar/437b9d5cf0923f597160c12329398fde?s=200&r=pg&d=retro'
-                  />
-                  <Typography variant='h5'>Admin</Typography>
-                </div>
-                <div className='commentText'>
-                  <Typography variant='body1'>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quaerat.
-                  </Typography>
-                </div>
-              </Paper>
-            </div>
-            {/* End Comments */}
+            <EventComments event={event} />
           </div>
         </Paper>
       </Grid>

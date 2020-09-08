@@ -5,10 +5,13 @@ import { loadUser } from './redux/actions/authActions'
 import './App.css'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import setAuthToken from './utils/setAuthToken'
 import theme from './theme/theme'
 import Navbar from './components/navbar/Navbar'
 import Landing from './pages/landing/Landing'
 import Routes from './components/routes/Routes'
+
+setAuthToken(localStorage.eventsUserToken)
 
 const App = ({ loadUser }) => {
   useEffect(() => {

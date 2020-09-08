@@ -155,4 +155,57 @@ router.delete('/:eventId', [auth], async (req, res) => {
   }
 })
 
+// Create a comment
+// Private
+// POST /api/events/:eventId/comment
+router.post('/:eventId/comment', [auth, [body('text', 'Ton commentaire ?').not().isEmpty()]], async (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
+  }
+
+  try {
+    const user = await User.findById(req.user.id)
+    const event = await Event.findById(req.params.eventId)
+    if (!event) {
+      return res.status(404).send('Evenement introuvable')
+    }
+
+    const comment = {
+      user: user.id,
+      name: user.name,
+      avatar: user.avatar,
+      text: req.body.text
+    }
+
+    await event.comments.unshift(comment)
+    await event.save()
+    return res.json(event)
+  } catch (err) {
+    console.error(err.message)
+    return res.status(500).send('Erreur serveur')
+  }
+})
+
+// Delete a comment
+// Private
+// POST /api/events/:eventId/comment/:commentId
+router.delete('/:eventId/comment/:commentId', [auth], async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    const event = await Event.findById(req.params.eventId)
+    if (!event) {
+      return res.status(404).send('Evenement introuvable')
+    }
+
+    const removeIndex = event.comments.filter(comment => comment.id === req.params.commentId)
+    event.comments.splice(removeIndex, 1)
+    await event.save()
+    return res.json(event)
+  } catch (err) {
+    console.error(err.message)
+    return res.status(500).send('Erreur serveur')
+  }
+})
+
 module.exports = router

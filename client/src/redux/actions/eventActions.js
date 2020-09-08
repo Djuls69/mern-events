@@ -27,10 +27,7 @@ export const getEvent = id => async dispatch => {
       payload: res.data
     })
   } catch (err) {
-    console.error(err.response.data)
-    dispatch({
-      type: GET_EVENTS_FAIL
-    })
+    console.error(err.message)
   }
 }
 
@@ -86,6 +83,42 @@ export const deleteEvent = (id, history) => async dispatch => {
     try {
       await axios.delete(`/api/events/${id}`)
       history.push(`/dashboard`)
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+}
+
+// Add a comment
+export const addComment = (eventId, text) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const res = await axios.post(`/api/events/${eventId}/comment`, text, config)
+    dispatch({
+      type: UPDATE_EVENT,
+      payload: res.data
+    })
+  } catch (err) {
+    const errors = err.response.data.errors
+    if (errors) {
+      errors.map(error => dispatch(setAlert(error)))
+    }
+  }
+}
+
+// Delete a comment
+export const deleteComment = (eventId, commentId) => async dispatch => {
+  if (window.confirm('Es-tu sûr de vouloir supprimer ton commentaire ?')) {
+    try {
+      const res = await axios.delete(`/api/events/${eventId}/comment/${commentId}`)
+      dispatch({
+        type: UPDATE_EVENT,
+        payload: res.data
+      })
     } catch (err) {
       console.log(err.message)
     }

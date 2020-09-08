@@ -15,8 +15,8 @@ const useStyles = makeStyles(theme => ({
 
 const Alert = ({ alert }) => {
   const classes = useStyles()
-  return alert.map(err => (
-    <div className={classes.root}>
+  return alert.map((err, idx) => (
+    <div key={idx} className={classes.root}>
       <Typography style={{ fontSize: '1.4rem' }} variant='h4'>
         {err.msg}
       </Typography>
