@@ -5,18 +5,26 @@ import Moment from 'react-moment'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
-import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import GoogleMapReact from 'google-map-react'
 import Marker from '../../components/marker/Marker'
 import AttendeeItem from '../../components/attendeeItem/AttendeeItem'
-import { getEvent, deleteEvent } from '../../redux/actions/eventActions'
+import { getEvent, deleteEvent, subscribeEvent, unsubscribeEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import EventComments from '../../components/eventComments/EventComments'
 
-const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent, history }) => {
+const Event = ({
+  auth,
+  events: { event, loading },
+  match,
+  getEvent,
+  deleteEvent,
+  subscribeEvent,
+  unsubscribeEvent,
+  history
+}) => {
   const classes = eventStyles()
 
   useEffect(() => {
@@ -65,10 +73,10 @@ const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent,
     } else if (!auth.loading && auth.user !== null) {
       return (
         <div className={classes.eventActions}>
-          <Button disableRipple variant='contained' color='primary'>
+          <Button onClick={() => subscribeEvent(event._id)} disableRipple variant='contained' color='primary'>
             <i className='fas fa-pen'></i> Participer
           </Button>
-          <Button disableRipple variant='contained' color='secondary'>
+          <Button onClick={() => unsubscribeEvent(event._id)} disableRipple variant='contained' color='secondary'>
             <i className='fas fa-eraser'></i> Se désister
           </Button>
         </div>
@@ -95,10 +103,7 @@ const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent,
                 </span>
               </Typography>
             </div>
-            <Button className={classes.createdBy}>
-              <Avatar alt='' src={event.userAvatar} />
-              <Typography variant='h5'>{event.userName}</Typography>
-            </Button>
+
             {displayButtons()}
 
             {/* Google Map */}
@@ -131,10 +136,10 @@ const Event = ({ auth, events: { event, loading }, match, getEvent, deleteEvent,
           <Typography variant='h4' color='secondary'>
             Liste des participants:
           </Typography>
-          <AttendeeItem
-            avatar='http://www.gravatar.com/avatar/437b9d5cf0923f597160c12329398fde?s=200&r=pg&d=retro'
-            name='Admin'
-          />
+          {!loading &&
+            event.attendees.map(({ _id, avatar, name, host }) => (
+              <AttendeeItem key={_id} avatar={avatar} name={name} host={host} />
+            ))}
         </Paper>
       </Grid>
       {/* End Attendees */}
@@ -153,7 +158,9 @@ Event.propTypes = {
   events: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
   getEvent: PropTypes.func.isRequired,
-  deleteEvent: PropTypes.func.isRequired
+  deleteEvent: PropTypes.func.isRequired,
+  subscribeEvent: PropTypes.func.isRequired,
+  unsubscribeEvent: PropTypes.func.isRequired
 }
 
-export default connect(mapState, { getEvent, deleteEvent })(Event)
+export default connect(mapState, { getEvent, deleteEvent, subscribeEvent, unsubscribeEvent })(Event)

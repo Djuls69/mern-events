@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
 import Typography from '@material-ui/core/Typography'
 import Card from '@material-ui/core/Card'
+import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { getEvents } from '../../redux/actions/eventActions'
-import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles({
   card: {
@@ -53,7 +53,14 @@ const EventsList = ({ events: { events, loading }, getEvents }) => {
       ))}
     </Fragment>
   ) : (
-    <CircularProgress />
+    <Fragment>
+      <Typography variant='h2' color='secondary' style={{ marginBottom: '3rem' }}>
+        Pas d'events pour le moment ...
+      </Typography>
+      <Button component={Link} to='/create-event' variant='contained' color='primary'>
+        Lances-toi !!
+      </Button>
+    </Fragment>
   )
 }
 

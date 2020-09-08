@@ -124,3 +124,29 @@ export const deleteComment = (eventId, commentId) => async dispatch => {
     }
   }
 }
+
+// Subscribe to an event
+export const subscribeEvent = eventId => async dispatch => {
+  try {
+    const res = await axios.post(`/api/events/${eventId}/subscribe`)
+    dispatch({
+      type: UPDATE_EVENT,
+      payload: res.data
+    })
+  } catch (err) {
+    console.log(err.response.data)
+  }
+}
+
+// Unsubscribe to an event
+export const unsubscribeEvent = eventId => async dispatch => {
+  try {
+    const res = await axios.post(`/api/events/${eventId}/unsubscribe`)
+    dispatch({
+      type: UPDATE_EVENT,
+      payload: res.data
+    })
+  } catch (err) {
+    console.log(err.response.data)
+  }
+}
