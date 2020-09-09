@@ -24,5 +24,18 @@ export const createEventStyles = makeStyles(theme => ({
     width: '100%',
     marginBottom: '3rem',
     fontSize: '1.6rem'
+  },
+  [theme.breakpoints.down('sm')]: {
+    root: {
+      maxWidth: '100%',
+      margin: '0 auto',
+      padding: '1rem',
+      marginBottom: '3rem'
+    },
+    formTitle: {
+      textAlign: 'center',
+      marginBottom: '3rem',
+      fontSize: '2rem'
+    }
   }
 }))

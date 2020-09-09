@@ -79,13 +79,11 @@ export const updateEvent = (eventId, formData, history) => async dispatch => {
 
 // Delete an event
 export const deleteEvent = (id, history) => async dispatch => {
-  if (window.confirm('Es-tu vraiment VRAIMENT sûr de vouloir supprimer ton event ?')) {
-    try {
-      await axios.delete(`/api/events/${id}`)
-      history.push(`/dashboard`)
-    } catch (err) {
-      console.log(err.message)
-    }
+  try {
+    await axios.delete(`/api/events/${id}`)
+    history.push(`/dashboard`)
+  } catch (err) {
+    console.log(err.message)
   }
 }
 
@@ -112,16 +110,14 @@ export const addComment = (eventId, text) => async dispatch => {
 
 // Delete a comment
 export const deleteComment = (eventId, commentId) => async dispatch => {
-  if (window.confirm('Es-tu sûr de vouloir supprimer ton commentaire ?')) {
-    try {
-      const res = await axios.delete(`/api/events/${eventId}/comment/${commentId}`)
-      dispatch({
-        type: UPDATE_EVENT,
-        payload: res.data
-      })
-    } catch (err) {
-      console.log(err.message)
-    }
+  try {
+    const res = await axios.delete(`/api/events/${eventId}/comment/${commentId}`)
+    dispatch({
+      type: UPDATE_EVENT,
+      payload: res.data
+    })
+  } catch (err) {
+    console.log(err.message)
   }
 }
 

@@ -22,6 +22,19 @@ const useStyles = makeStyles(theme => ({
   formTitle: {
     textAlign: 'center',
     marginBottom: '3rem'
+  },
+  [theme.breakpoints.down('sm')]: {
+    root: {
+      maxWidth: '100%',
+      margin: '0 auto',
+      padding: '1rem',
+      marginBottom: '3rem'
+    },
+    formTitle: {
+      textAlign: 'center',
+      marginBottom: '3rem',
+      fontSize: '2rem'
+    }
   }
 }))
 

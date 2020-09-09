@@ -1,18 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { eventStyles } from './EventStyles'
-import Moment from 'react-moment'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Moment from 'react-moment'
 import GoogleMapReact from 'google-map-react'
 import Marker from '../../components/marker/Marker'
 import AttendeeItem from '../../components/attendeeItem/AttendeeItem'
 import { getEvent, deleteEvent, subscribeEvent, unsubscribeEvent } from '../../redux/actions/eventActions'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import EventComments from '../../components/eventComments/EventComments'
 
 const Event = ({
@@ -26,6 +31,7 @@ const Event = ({
   history
 }) => {
   const classes = eventStyles()
+  const [modal, setModal] = useState(false)
 
   useEffect(() => {
     getEvent(match.params.eventId)
@@ -65,7 +71,7 @@ const Event = ({
           <Button component={Link} to={`/edit-event/${event._id}`} disableRipple variant='contained' color='primary'>
             <i className='fas fa-pen'></i> Editer
           </Button>
-          <Button disableRipple onClick={() => deleteEvent(event._id, history)} variant='contained' color='secondary'>
+          <Button disableRipple onClick={() => setModal(true)} variant='contained' color='secondary'>
             <i className='fas fa-eraser'></i> Supprimer
           </Button>
         </div>
@@ -87,7 +93,7 @@ const Event = ({
 
   return event !== null && !loading ? (
     <Grid container spacing={3}>
-      <Grid item md={8}>
+      <Grid item xs={12} lg={8}>
         <Paper className={classes.container}>
           <img src={displayImage()} className={classes.media} alt='' />
           <div className={classes.eventContent}>
@@ -105,6 +111,27 @@ const Event = ({
             </div>
 
             {displayButtons()}
+
+            {modal && (
+              <Dialog open={modal} aria-labelledby='alert-dialog-title' aria-describedby='alert-dialog-description'>
+                <DialogTitle id='alert-dialog-title'>
+                  {'Es-tu vraiment VRAIMENT sûr de vouloir supprimer ton event ?'}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id='alert-dialog-description'>
+                    Attention, tu ne peux pas revenir en arrière !
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setModal(false)} variant='contained' color='secondary'>
+                    Annuler
+                  </Button>
+                  <Button onClick={() => deleteEvent(event._id, history)} variant='contained' color='primary'>
+                    Je suis sûr
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            )}
 
             {/* Google Map */}
             <div style={{ width: '100%', height: '200px' }}>
@@ -131,7 +158,7 @@ const Event = ({
       </Grid>
 
       {/* Attendees */}
-      <Grid item md={4}>
+      <Grid item xs={12} lg={4}>
         <Paper className={classes.container}>
           <Typography variant='h4' color='secondary'>
             Liste des participants:

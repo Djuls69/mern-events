@@ -2,7 +2,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const eventStyles = makeStyles(theme => ({
   container: {
-    padding: '3rem'
+    padding: '3rem',
+    width: '100%'
   },
   media: {
     maxHeight: '30rem',
@@ -36,6 +37,33 @@ export const eventStyles = makeStyles(theme => ({
     marginTop: '3rem',
     '& h3': {
       marginBottom: '2rem'
+    }
+  },
+  [theme.breakpoints.down('md')]: {
+    container: {
+      '& h2': {
+        fontSize: '1.6rem'
+      },
+      '& h3': {
+        fontSize: '1.6rem'
+      },
+      '& h4': {
+        fontSize: '1.6rem'
+      },
+      '& p': {
+        fontSize: '1rem'
+      }
+    },
+    eventActions: {
+      margin: '2rem 0',
+      '& button': {
+        marginRight: '1rem',
+        fontSize: '1rem'
+      },
+      '& a': {
+        marginRight: '1rem',
+        fontSize: '1rem'
+      }
     }
   }
 }))

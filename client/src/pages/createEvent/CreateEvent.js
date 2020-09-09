@@ -68,6 +68,7 @@ const CreateEvent = ({ createEvent, history }) => {
         </Typography>
         <TextField
           className={classes.textFields}
+          type='text'
           name='eventName'
           value={eventName}
           onChange={handleChange}

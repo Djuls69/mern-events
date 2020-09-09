@@ -9,11 +9,14 @@ import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { getEvents } from '../../redux/actions/eventActions'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '3rem'
+    marginBottom: '3rem',
+    '& p': {
+      color: '#aaa'
+    }
   },
   mediaContainer: {
     width: '33%',
@@ -24,8 +27,28 @@ const useStyles = makeStyles({
     height: 150,
     objectFit: 'cover',
     display: 'block'
+  },
+  [theme.breakpoints.down('sm')]: {
+    card: {
+      '& h2': {
+        fontSize: '1.6rem'
+      },
+      '& p': {
+        fontSize: '0.8rem'
+      }
+    },
+    mediaContainer: {
+      width: '33%',
+      marginRight: '1rem'
+    },
+    cardMedia: {
+      width: '100%',
+      height: 80,
+      objectFit: 'cover',
+      display: 'block'
+    }
   }
-})
+}))
 
 const EventsList = ({ events: { events, loading }, getEvents }) => {
   const classes = useStyles()
